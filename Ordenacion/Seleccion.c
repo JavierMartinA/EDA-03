@@ -22,6 +22,8 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
     char *comparador;
     int indiceMenor;
     DISCO *obraMenor;
+    char *nombreMenor;
+    char * nombreComparador;
 
     gettimeofday(&inicio, NULL);
     Orden = InitOrden(Ficha);
@@ -52,7 +54,7 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
     {
         for (int i = 0; i < Estadisticas.NumeroFichas - 1; i++)
         {
-           obraMenor = Orden[i];
+            obraMenor = Orden[i];
             min = Orden[i]->ApellAutor;
             indiceMenor = i;
             for (int j = i + 1; j < Estadisticas.NumeroFichas; j++)
@@ -66,21 +68,24 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
                 }
                 else if (strcmp(min, comparador) == 0)
                 {
+                    nombreMenor = obraMenor->NomAutor; // NO Orden[i]
+                    nombreComparador = Orden[j]->NomAutor;
 
-                    
-                    min = Orden[i]->NomAutor;
-                    comparador = Orden[j] ->NomAutor;
-                    if (strcmp(min, comparador) > 0)
+                    // Comprobar NULLs para evitar SEGFAULT
+                    if (nombreMenor == NULL)
+                        nombreMenor = "";
+                    if (nombreComparador == NULL)
+                        nombreComparador = "";
+
+                    if (strcmp(nombreMenor, nombreComparador) > 0)
                     {
                         obraMenor = Orden[j];
                         indiceMenor = j;
-                        min = Orden[j]->NomAutor;
                     }
                 }
             }
             Orden[indiceMenor] = Orden[i];
             Orden[i] = obraMenor;
-
         }
     }
     gettimeofday(&fin, NULL);
