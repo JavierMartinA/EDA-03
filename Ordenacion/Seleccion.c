@@ -68,10 +68,10 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
                 }
                 else if (strcmp(min, comparador) == 0)
                 {
-                    nombreMenor = obraMenor->NomAutor; // NO Orden[i]
+                    nombreMenor = obraMenor->NomAutor;
                     nombreComparador = Orden[j]->NomAutor;
 
-                    // Comprobar NULLs para evitar SEGFAULT
+                    // Comprobar NULLs para evitar errores de segmentación
                     if (nombreMenor == NULL)
                         nombreMenor = "";
                     if (nombreComparador == NULL)
