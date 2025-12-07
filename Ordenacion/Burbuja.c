@@ -22,6 +22,8 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
     gettimeofday(&inicio, NULL);
     Orden = InitOrden(Ficha);
     DISCO aux;
+    char *nombreMenor;
+    char * nombreComparador;
     // Código del Alumno del método de ordenación de la Burbuja
 
     gettimeofday(&fin, NULL);
@@ -29,17 +31,42 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
 
     if (Campo == ORDEN_POR_AUTOR)
     {
+        for (int i = 1; i <= Estadisticas.NumeroFichas - 1; i++)
+        {
+            // Coge los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
+            for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
+            {
+                // si están desordenados se intercambian usando una variable auxiliar.
+                if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) > 0)
+                {
+                    aux = Ficha[j];
+                    Ficha[j] = Ficha[j + 1];
+                    Ficha[j + 1] = aux;
+                }if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) == 0)
+                {
+                    if (Ficha[j].NomAutor == NULL)
+                        Ficha[j].NomAutor = "";
+                    if (Ficha[j + 1].NomAutor == NULL)
+                        Ficha[j + 1].NomAutor = "";
+
+                    if(strcmp(Ficha[j].NomAutor, Ficha[j + 1].NomAutor) > 0)
+                    {
+                        aux = Ficha[j];
+                        Ficha[j] = Ficha[j + 1];
+                        Ficha[j + 1] = aux;
+                    }
+                }
+            }
+        }
     }
-    else
+    else if(Campo == ORDEN_POR_TITULO)
     {
         for (int i = 1; i <= Estadisticas.NumeroFichas - 1; i++)
         {
-            // Coge los N-i primeros elementos y los compara
-            // cada uno de ellos con el inmediatamente posterior.
+            // Coge los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
             for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
             {
-                // si están desordenados se intercambian
-                // usando una variable auxiliar.
+                // si están desordenados se intercambian usando una variable auxiliar.
                 if (strcmp(Ficha[j].Obra,Ficha[j + 1].Obra) > 0)
                 {
                     aux = Ficha[j];
@@ -49,6 +76,8 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
             }
         }
     }
+    gettimeofday(&fin, NULL);
+    Estadisticas.TiempoBurbuja = DifTiempo(inicio, fin);
 
     return (Orden);
 }
