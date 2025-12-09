@@ -18,7 +18,7 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
     struct timeval inicio, fin;
 
     // Añade aquí la definición del resto de variables necesarias
-    char *min;
+    DISCO *min;
     char *comparador;
     int indiceMenor;
     DISCO *obraMenor;
@@ -33,59 +33,51 @@ DISCO **Seleccion(DISCO *Ficha, int Campo)
     {
         for (int i = 0; i < Estadisticas.NumeroFichas - 1; i++)
         {
-            obraMenor = Orden[i];
-            min = Orden[i]->Obra;
+            min = Orden[i];
             indiceMenor = i;
             for (int j = i + 1; j < Estadisticas.NumeroFichas; j++)
             {
-                comparador = Orden[j]->Obra;
-                if (strcmp(min, comparador) > 0)
+                if (strcmp(min->Obra, Orden[j]->Obra) > 0)
                 {
-                    obraMenor = Orden[j];
+                    min = Orden[j];
                     indiceMenor = j;
-                    min = Orden[j]->Obra;
                 }
             }
             Orden[indiceMenor] = Orden[i];
-            Orden[i] = obraMenor;
+            Orden[i] = min;
         }
     }
     else if (Campo == ORDEN_POR_AUTOR)
     {
         for (int i = 0; i < Estadisticas.NumeroFichas - 1; i++)
         {
-            obraMenor = Orden[i];
-            min = Orden[i]->ApellAutor;
+            min = Orden[i];
             indiceMenor = i;
             for (int j = i + 1; j < Estadisticas.NumeroFichas; j++)
             {
-                comparador = Orden[j]->ApellAutor;
-                if (strcmp(min, comparador) > 0)
+                if (strcmp(min->ApellAutor, Orden[j]->ApellAutor) > 0)
                 {
-                    obraMenor = Orden[j];
                     indiceMenor = j;
-                    min = Orden[j]->ApellAutor;
+                    min = Orden[j];
                 }
-                else if (strcmp(min, comparador) == 0)
+                else if (strcmp(min->ApellAutor, Orden[j]->ApellAutor) == 0)
                 {
-                    nombreMenor = obraMenor->NomAutor;
-                    nombreComparador = Orden[j]->NomAutor;
 
                     // Comprobar NULLs para evitar errores de segmentación
-                    if (nombreMenor == NULL)
-                        nombreMenor = "";
-                    if (nombreComparador == NULL)
-                        nombreComparador = "";
+                    if (min->NomAutor == NULL)
+                        min->NomAutor = "";
+                    if (Orden[j]->NomAutor == NULL)
+                        Orden[j]->NomAutor = "";
 
-                    if (strcmp(nombreMenor, nombreComparador) > 0)
+                    if (strcmp(min->NomAutor, Orden[j]->NomAutor) > 0)
                     {
-                        obraMenor = Orden[j];
+                        min = Orden[j];
                         indiceMenor = j;
                     }
                 }
             }
             Orden[indiceMenor] = Orden[i];
-            Orden[i] = obraMenor;
+            Orden[i] = min;
         }
     }
     gettimeofday(&fin, NULL);
