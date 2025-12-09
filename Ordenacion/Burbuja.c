@@ -26,14 +26,11 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
     char * nombreComparador;
     // Código del Alumno del método de ordenación de la Burbuja
 
-    gettimeofday(&fin, NULL);
-    Estadisticas.TiempoBurbuja = DifTiempo(inicio, fin);
-
     if (Campo == ORDEN_POR_AUTOR)
     {
         for (int i = 1; i <= Estadisticas.NumeroFichas - 1; i++)
         {
-            // Coge los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
+            // Cogemos los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
             for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
             {
                 // si están desordenados se intercambian usando una variable auxiliar.
@@ -42,7 +39,7 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
                     aux = Ficha[j];
                     Ficha[j] = Ficha[j + 1];
                     Ficha[j + 1] = aux;
-                }if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) == 0)
+                }if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) == 0) //Si los apellidos son iguales, comparamps por el nombre del autor
                 {
                     if (Ficha[j].NomAutor == NULL)
                         Ficha[j].NomAutor = "";
@@ -63,7 +60,7 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
     {
         for (int i = 1; i <= Estadisticas.NumeroFichas - 1; i++)
         {
-            // Coge los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
+            // Cogemos los N-i primeros elementos y los compara cada uno de ellos con el inmediatamente posterior.
             for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
             {
                 // si están desordenados se intercambian usando una variable auxiliar.
