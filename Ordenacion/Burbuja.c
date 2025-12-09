@@ -21,7 +21,7 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
 
     gettimeofday(&inicio, NULL);
     Orden = InitOrden(Ficha);
-    DISCO aux;
+    DISCO *aux;
     char *nombreMenor;
     char * nombreComparador;
     // Código del Alumno del método de ordenación de la Burbuja
@@ -34,23 +34,23 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
             for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
             {
                 // si están desordenados se intercambian usando una variable auxiliar.
-                if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) > 0)
+                if (strcmp(Orden[j]->ApellAutor,Orden[j + 1]->ApellAutor) > 0)
                 {
-                    aux = Ficha[j];
-                    Ficha[j] = Ficha[j + 1];
-                    Ficha[j + 1] = aux;
-                }if (strcmp(Ficha[j].ApellAutor,Ficha[j + 1].ApellAutor) == 0) //Si los apellidos son iguales, comparamps por el nombre del autor
+                    aux = Orden[j];
+                    Orden[j] = Orden[j + 1];
+                    Orden[j + 1] = aux;
+                }if (strcmp(Orden[j]->ApellAutor,Orden[j + 1]->ApellAutor) == 0) //Si los apellidos son iguales, comparamps por el nombre del autor
                 {
-                    if (Ficha[j].NomAutor == NULL)
-                        Ficha[j].NomAutor = "";
-                    if (Ficha[j + 1].NomAutor == NULL)
-                        Ficha[j + 1].NomAutor = "";
+                    if (Orden[j]->NomAutor == NULL)
+                        Orden[j]->NomAutor = "";
+                    if (Orden[j + 1]->NomAutor == NULL)
+                        Orden[j + 1]->NomAutor = "";
 
-                    if(strcmp(Ficha[j].NomAutor, Ficha[j + 1].NomAutor) > 0)
+                    if(strcmp(Orden[j]->NomAutor, Orden[j + 1]->NomAutor) > 0)
                     {
-                        aux = Ficha[j];
-                        Ficha[j] = Ficha[j + 1];
-                        Ficha[j + 1] = aux;
+                        aux = Orden[j];
+                        Orden[j] = Orden[j + 1];
+                        Orden[j + 1] = aux;
                     }
                 }
             }
@@ -64,11 +64,11 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
             for (int j = 0; j < Estadisticas.NumeroFichas - i; j++)
             {
                 // si están desordenados se intercambian usando una variable auxiliar.
-                if (strcmp(Ficha[j].Obra,Ficha[j + 1].Obra) > 0)
+                if (strcmp(Orden[j]->Obra,Orden[j + 1]->Obra) > 0)
                 {
-                    aux = Ficha[j];
-                    Ficha[j] = Ficha[j + 1];
-                    Ficha[j + 1] = aux;
+                    aux = Orden[j];
+                    Orden[j] = Orden[j + 1];
+                    Orden[j + 1] = aux;
                 }
             }
         }
