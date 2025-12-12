@@ -22,10 +22,10 @@ void BusquedaBinaria(DISCO *Fichas)
     bool Encontrado;
 
     // Añadir aquí la definición del resto de variables usadas
-    // Izquierda, derecha y medio para extremos y pivote
+    // Izquierda, derecha y medio, para extremos y pivote
     // Medio2 para cuando ya he encontrado un disco, y tengo que mirar si hay más por la izquierda
     int izquierda, derecha, medio;
-    // Capacidad para reservar memoria para resultados, reservando inicialmente para 10 discos
+    // Capacidad, para reservar memoria para resultados, reservando inicialmente para 10 discos
     int capacidad = 10;
     // Variables para los bucles for que sirven para pasar el apellido de los autores a minúscula
     // Es un bucle que sigue la misma lógica que el usado en BusquedaArbol
@@ -47,22 +47,26 @@ void BusquedaBinaria(DISCO *Fichas)
 
     // Código del alumno del Algoritmo de Búsqueda Binaria
     /*La busqueda binaria se basa en coger la mitad entre todos los números de tu array y
-    comparar si es el valor buscado
+    comparar si es el valor buscado.
     Si al comparar te sale que el valor buscado es mayor a tu medio, claramente haces el mismo
     proceso pero solo con los números a la derecha de tu medio, y buscas un nuevo medio
     Si al comparar te sale que el valor buscado es menor a tu medio, claramente haces el mismo
     proceso pero solo con los números a la izquierda de tu medio, y buscas un nuevo medio*/
 
-    // Reservo memoria para Resultado
+    // Reservo memoria para Resultado, reservando memoria para 10 discos
     Resultado = (DISCO **)malloc(sizeof(DISCO *) * capacidad);
 
+    //Si no se me ha dado memoria, simplemente termino el método
+    if (Resultado == NULL){
+        return;
+    }
     // Inicializo la variable booleana de encontrada a false
     Encontrado = false;
     // Inicializo izquierda y derecha, poniéndolos como los extremos de todos los discos
     izquierda = 0;
     derecha = Estadisticas.NumeroFichas - 1;
 
-    // Bucle para buscar por busqueda binaria, hasta encontrar algún disco o encontrar que no existe ninguno
+    // Bucle para buscar por busqueda binaria, hasta encontrar algún disco o encontrar que no existe ninguno (izquierda > derecha)
     while (!Encontrado && izquierda <= derecha)
     {
         // El medio será truncado, es decir si el medio sale 1.5, será 1
@@ -72,7 +76,7 @@ void BusquedaBinaria(DISCO *Fichas)
         for (j = 0; Orden[medio]->ApellAutor[j] != 0; j++)
         {
             AutorMedio[j] = Orden[medio]->ApellAutor[j];
-            if (AutorMedio[j] < 'a') // Si el autor está en mayúscula sumarle 32(' ')
+            if (AutorMedio[j] < 'a') // Si alguna letra del autor está en mayúscula, sumarle 32(' ')
                 AutorMedio[j] += ' ';
         }
         AutorMedio[j] = 0; // Poner fin al string después de escribir el apellido
@@ -81,7 +85,7 @@ void BusquedaBinaria(DISCO *Fichas)
         if (strcmp(AutorMedio, Autor) == 0) // Si es el buscado
         {
             Resultado[Hallados] = Orden[medio]; // Guardar el disco en resultados
-            Hallados++;                         // Aumentar a 1, el número de discos hallados
+            Hallados++;                         // Aumentar en 1, el número de discos hallados
 
             Encontrado = true; // Pasar la variable booleana a true para acabar el bucle
         }
@@ -156,8 +160,6 @@ void BusquedaBinaria(DISCO *Fichas)
             // Comprobar derecha
             if (HayDer) // Entra si el anterior disco por la derecha había sido compatible
             {
-                i = 0;
-
                 AutorMedio[0] = 0; // Limpio la variable donde guardo los autores de las fichas
                 // Pasar el apellido a minúsculas
                 for (j = 0; Orden[medio]->ApellAutor[j] != 0; j++)
@@ -191,18 +193,24 @@ void BusquedaBinaria(DISCO *Fichas)
             }
         }
     }
+    //Libero el array de punteros que contenía las fichas ordenadas
     free(Orden);
 
+    //Cogemos el tiempo final
     gettimeofday(&fin, NULL);
+    //Calculamos la diferencia entre tiempo inicial y final, y lo asignamos a la estadística correspondiente
     Estadisticas.TiempoBusquedaBinaria = DifTiempo(inicio, fin);
 
+    //Si no se han encontrado fichas que coincidan con el autor buscado, se muestra mensaje de error
     if (Encontrado == false)
     {
         VentanaError("No hay autores que cumplan el criterio");
         return;
     }
 
+    //Se muestran las fichas encontradas
     Listado1(Resultado, Hallados, Fichas);
+    //Se libera el array de punteros con las fichas encontradas
     free(Resultado);
     return;
 }

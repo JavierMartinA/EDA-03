@@ -78,7 +78,7 @@ DISCO **Burbuja(DISCO *Ficha, int Campo)
             }
         }
     }
-    //Cogemos el tiempo
+    //Cogemos el tiempo final
     gettimeofday(&fin, NULL);
     //Calculamos la diferencia entre tiempo inicial y final, y lo asignamos a la estadística correspondiente
     Estadisticas.TiempoBurbuja = DifTiempo(inicio, fin);
