@@ -22,19 +22,14 @@ void BusquedaBinaria(DISCO *Fichas)
     bool Encontrado;
 
     // Añadir aquí la definición del resto de variables usadas
-    // Izquierda, derecha y medio, para extremos y pivote
-    // Medio2 para cuando ya he encontrado un disco, y tengo que mirar si hay más por la izquierda
+    // Izquierda, derecha y medio, para extremos y pivote.
+    // Y luego se usa izquierda y medio, para encontrar según están ordenados, el primero de los discos entre todos los que hay coincidentes
     int izquierda, derecha, medio;
     // Capacidad, para reservar memoria para resultados, reservando inicialmente para 10 discos
     int capacidad = 10;
     // Variables para los bucles for que sirven para pasar el apellido de los autores a minúscula
     // Es un bucle que sigue la misma lógica que el usado en BusquedaArbol
-    int i, j;
-    // Valores booleanos para buscar por la izquierda y la derecha, después de haber encotrado un disco
-    bool HayIzq = true;
-    bool HayDer = true;
-    // Valor booleano, para salir del segundo while
-    bool Encontrado2 = false;
+    int i;
     // Variable para guardar el nombre del autor de la ficha
     char AutorMedio[256];
 
@@ -56,8 +51,9 @@ void BusquedaBinaria(DISCO *Fichas)
     // Reservo memoria para Resultado, reservando memoria para 10 discos
     Resultado = (DISCO **)malloc(sizeof(DISCO *) * capacidad);
 
-    //Si no se me ha dado memoria, simplemente termino el método
-    if (Resultado == NULL){
+    // Si no se me ha dado memoria, simplemente termino el método
+    if (Resultado == NULL)
+    {
         return;
     }
     // Inicializo la variable booleana de encontrada a false
@@ -73,20 +69,17 @@ void BusquedaBinaria(DISCO *Fichas)
         medio = (int)((izquierda + derecha) / 2);
 
         // Pasar el nombre de los autores a minúscula
-        for (j = 0; Orden[medio]->ApellAutor[j] != 0; j++)
+        for (i = 0; Orden[medio]->ApellAutor[i] != 0; i++)
         {
-            AutorMedio[j] = Orden[medio]->ApellAutor[j];
-            if (AutorMedio[j] < 'a') // Si alguna letra del autor está en mayúscula, sumarle 32(' ')
-                AutorMedio[j] += ' ';
+            AutorMedio[i] = Orden[medio]->ApellAutor[i];
+            if (AutorMedio[i] < 'a') // Si alguna letra del autor está en mayúscula, sumarle 32(' ')
+                AutorMedio[i] += ' ';
         }
-        AutorMedio[j] = 0; // Poner fin al string después de escribir el apellido
+        AutorMedio[i] = 0; // Poner fin al string después de escribir el apellido
 
         // Comparar el autor en el disco, respecto al autor tecleado por el usuario
         if (strcmp(AutorMedio, Autor) == 0) // Si es el buscado
         {
-            Resultado[Hallados] = Orden[medio]; // Guardar el disco en resultados
-            Hallados++;                         // Aumentar en 1, el número de discos hallados
-
             Encontrado = true; // Pasar la variable booleana a true para acabar el bucle
         }
         else if (strcmp(AutorMedio, Autor) > 0) // Si el autor buscado está más a la izquierda
@@ -102,115 +95,100 @@ void BusquedaBinaria(DISCO *Fichas)
     }
     // En este punto solo tendré un disco y tendré que comprobar los demás.
     // O quizá no tenga ningún disco, por lo que Encontrado = false, y no entraré al siguiente bucle
-    // Medio 2 es utilizado para mirar a la izquierda del disco que había encontrado, por lo que lo paso al anterior disco del ya encontrado
-    int medio2 = medio - 1;
-    // Medio es utilizado para mirar a la derecha del disco ya encontrado, por lo que lo paso al siguiente disco
-    medio++;
-
-    /*Mientras se haya encontrado un disco en el anterior while, se sigan encontrando discos compatibles a los laterales
-    y no esté ya fuera de los límites del array de discos*/
-    while (!Encontrado2 && Encontrado && (medio2 >= 0 && medio < Estadisticas.NumeroFichas))
+    if (Encontrado)
     {
-        // Si ya he hallado los discos para los que tengo capacidad, aumento la capacidad del array Resultado
-        if (Hallados == capacidad - 1)
+        /*Mientras se haya encontrado un disco en el anterior while, se seguirán buscando discos a la izquierda del encontrado,
+        para encontrar el primero de todos los discos compatibles, hasta encontrar uno no compatible o encontrar el límite del array*/
+        while (medio > 0)
         {
-            // Duplico la capacidad
-            capacidad *= 2;
-            // Busco nuevo espacio de memoria
-            Resultado = (DISCO **)realloc(Resultado, sizeof(DISCO *) * capacidad);
-        }
-        // Compruebo que se me haya dado memoria
-        if (Resultado != NULL)
-        {
-            // Comprobar izquierda
-            if (HayIzq) // Entra si el anterior disco por la izquierda había sido compatible
+            // Reutilizo la variable izquierda para ir buscando discos coincidentes a la izquierda del ya encontrado
+            izquierda = medio - 1;
+            AutorMedio[0] = 0; // Limpio la variable donde guardo los autores de las fichas
+            // Pasar el apellido a minúsculas
+            for (i = 0; Orden[izquierda]->ApellAutor[i] != 0; i++)
             {
-                AutorMedio[0] = 0; // Limpio la variable donde guardo los autores de las fichas
-                // Pasar el apellido a minúsculas
-                for (i = 0; Orden[medio2]->ApellAutor[i] != 0; i++)
-                {
-                    AutorMedio[i] = Orden[medio2]->ApellAutor[i];
-                    if (AutorMedio[i] < 'a')
-                        AutorMedio[i] += ' ';
-                }
-                AutorMedio[i] = 0; // Poner fin al string después de escribir el apellido
-
-                // Si el de la izquierda también coincide
-                if (strcmp(AutorMedio, Autor) == 0)
-                {
-                    // Hay izquierda, por lo que el bool de hayIzq sigue en true
-                    Resultado[Hallados] = Orden[medio2]; // Guardo el disco en el array
-                    Hallados++;                          // Aumento el número de discos hallados
-                    medio2--;                            // Paso al anterior disco
-                }
-                // Si el de la izquierda no coincide
-                else
-                {
-                    // Ya no hay más discos que coincidan a la izquierda
-                    HayIzq = false;
-
-                    // Si ya no había más a la derecha, y ya no hay a la izquierda, salgo del while
-                    if (!HayDer)
-                    {
-                        Encontrado2 = true;
-                    }
-                }
+                AutorMedio[i] = Orden[izquierda]->ApellAutor[i];
+                if (AutorMedio[i] < 'a')
+                    AutorMedio[i] += ' ';
             }
+            AutorMedio[i] = 0; // Poner fin al string después de escribir el apellido
 
-            // Comprobar derecha
-            if (HayDer) // Entra si el anterior disco por la derecha había sido compatible
+            // Si el de la izquierda también coincide
+            if (strcmp(AutorMedio, Autor) == 0)
             {
-                AutorMedio[0] = 0; // Limpio la variable donde guardo los autores de las fichas
-                // Pasar el apellido a minúsculas
-                for (j = 0; Orden[medio]->ApellAutor[j] != 0; j++)
-                {
-                    AutorMedio[j] = Orden[medio]->ApellAutor[j];
-                    if (AutorMedio[j] < 'a') // Si el autor está en mayúscula sumarle 32(' ')
-                        AutorMedio[j] += ' ';
-                }
-                AutorMedio[j] = 0; // Poner fin al string después de escribir el apellido
+                // Paso al siguiente a la izquierda
+                medio--;
+            }
+            // Si el de la izquierda no coincide, ya he encontrado el primero de todos los discos compatibles, y salgo del while
+            else
+            {
+                break;
+            }
+        }
 
-                // Si el de la derecha coincide con lo buscado
-                if (strcmp(AutorMedio, Autor) == 0)
-                {
-                    // Hay derecha, por lo que el bool de hayDer sigue en true
-                    Resultado[Hallados] = Orden[medio]; // Guardo el disco en el array
-                    Hallados++;                         // Aumento el número de discos hallados
-                    medio++;                            // Paso al siguiente disco
-                }
-                // Si el de la derecha no coincide
-                else
-                {
-                    // Ya no hay más discos que coincidan a la derecha
-                    HayDer = false;
+        /*Hago otro bucle para insertar los discos compatibles al array Resultados, seguirá insertando
+        hasta encontrar un disco no compatible, o llegar al límite del array*/
+        while (medio < Estadisticas.NumeroFichas)
+        {
+            // Pasar el nombre de los autores a minúscula
+            for (i = 0; Orden[medio]->ApellAutor[i] != 0; i++)
+            {
+                AutorMedio[i] = Orden[medio]->ApellAutor[i];
+                if (AutorMedio[i] < 'a') // Si alguna letra del autor está en mayúscula, sumarle 32(' ')
+                    AutorMedio[i] += ' ';
+            }
+            AutorMedio[i] = 0; // Poner fin al string después de escribir el apellido
 
-                    // Si ya no había más discos a la izquierda, y ya tampoco a la derecha, paro el while
-                    if (!HayIzq)
+            // Si el disco de esta iteración es compatible con el buscado, lo inserto al array
+            if (strcmp(AutorMedio, Autor) == 0)
+            {
+                // Si ya he hallado los discos para los que tengo capacidad, aumento la capacidad del array Resultado
+                if (Hallados == capacidad - 1)
+                {
+                    // Duplico la capacidad
+                    capacidad *= 2;
+                    // Busco nuevo espacio de memoria
+                    Resultado = (DISCO **)realloc(Resultado, sizeof(DISCO *) * capacidad);
+                    // Compruebo que se me haya dado memoria
+                    if (Resultado == NULL)
                     {
-                        Encontrado2 = true;
+                        return; // Si no se me ha dado memoria, termino el método
                     }
                 }
+                // Inserto el disco compatible al array Resultado
+                Resultado[Hallados] = Orden[medio];
+                // Aumento el número de discos hallados
+                Hallados++;
+                // Paso al siguiente disco a la derecha
+                medio++;
+            }
+            /*Si el disco de esta iteración no es compatible, debo salir del while, debido a que
+            ya he insertado todos los discos compatible en el array Resultado*/
+            else
+            {
+                break;
             }
         }
     }
-    //Libero el array de punteros que contenía las fichas ordenadas
+
+    // Libero el array de punteros que contenía las fichas ordenadas
     free(Orden);
 
-    //Cogemos el tiempo final
+    // Cogemos el tiempo final
     gettimeofday(&fin, NULL);
-    //Calculamos la diferencia entre tiempo inicial y final, y lo asignamos a la estadística correspondiente
+    // Calculamos la diferencia entre tiempo inicial y final, y lo asignamos a la estadística correspondiente
     Estadisticas.TiempoBusquedaBinaria = DifTiempo(inicio, fin);
 
-    //Si no se han encontrado fichas que coincidan con el autor buscado, se muestra mensaje de error
+    // Si no se han encontrado fichas que coincidan con el autor buscado, se muestra mensaje de error
     if (Encontrado == false)
     {
         VentanaError("No hay autores que cumplan el criterio");
         return;
     }
 
-    //Se muestran las fichas encontradas
+    // Se muestran las fichas encontradas
     Listado1(Resultado, Hallados, Fichas);
-    //Se libera el array de punteros con las fichas encontradas
+    // Se libera el array de punteros con las fichas encontradas
     free(Resultado);
     return;
 }
