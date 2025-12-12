@@ -40,7 +40,7 @@ DISCO **Insercion(DISCO *Ficha,int Campo)
             /* El bucle mueve los elementos de la parte ordenada (de 0 a i-1) que son mayores
             que la variable auxiliar a una posición por delante de su posición actual, y pone la 
             ficha auxiliar donde le corresponde en la parte ordenada*/
-            while (j >= 0)
+            while (j >= 0 && strcmp(Orden[j]->ApellAutor, aux->ApellAutor)>=0)
             {
                 //Asigno a una variable la comparación de ambas fichas
                 int comparison = strcmp(Orden[j]->ApellAutor, aux->ApellAutor);
@@ -66,6 +66,13 @@ DISCO **Insercion(DISCO *Ficha,int Campo)
                         Orden[j + 1] = Orden[j];
                         //Reducir j, para seguir comparando el auxiliar con otra ficha de la parte ordenada
                         j--;
+                    }
+                    /* Si los apellidos son iguales Y los nombres no son mayores (es decir, menores o iguales),
+                    la clave está en su lugar correcto con respecto a Ficha[j]. No se desplaza*/
+                    else
+                    {
+                        //Se rompe el while
+                        break;
                     }
                 }
             }
